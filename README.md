@@ -70,7 +70,6 @@ for S in s_values:
     entropies_y.append(entropy_y)
     entropies_z.append(entropy_z)
 
- Scatter plots of Shannon entropy
 plt.figure(figsize=(12, 4))
 plt.subplot(131)
 plt.scatter(s_values, entropies_x)
