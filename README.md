@@ -10,7 +10,10 @@ import numpy as np
 import matplotlib.pyplot as plt
 import math
 
-def lorenz_system(x, y, z, r=28, b=8/3, s):
+
+r= 28
+b=8/3
+def lorenz_system(x, y, z, r, b, s):
     x_dot = s * (y - x)
     y_dot = r * x - y - x * z
     z_dot = x * y - b * z
@@ -32,9 +35,7 @@ zs = np.empty(len(t) + 1)
 xs[0], ys[0], zs[0] = (1, 1, 1)
 
 svalues=[]
-xvalues=[]
-yvalues=[]
-zvalues=[]
+
 for S in s:
   svalues.append(S)
 
@@ -45,18 +46,15 @@ for S in s:
         ys[i + 1] = ys[i] + (y_dot * dt)
         zs[i + 1] = zs[i] + (z_dot * dt)
         #cataloging x,y,z values
-        xvalues.append(xs[i])
-        yvalues.append(ys[i])
-        zvalues.append(zs[i])
         
         # calculate and save the peak values of the z solution
         
     # "use final values from one run as initial conditions for the next to stay near the attractor"
-    xs[0], ys[0], zs[0] = xs[i], ys[i], zs[i]
+xs[0], ys[0], zs[0] = xs[i], ys[i], zs[i]
 
-xarray=np.array(xvalues)
-yarray=np.array(yvalues)
-zarray-np.array(zvalues)
+xarray=np.array(xs)
+yarray=np.array(ys)
+zarray=np.array(zs)
 
 xdist=[]
 ydist=[]
