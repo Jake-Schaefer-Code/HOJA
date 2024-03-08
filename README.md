@@ -1,80 +1,92 @@
-# PHYS 231 group research project Winter 2024
 # Group: Henry Macrae-Sadek, Omar Sierra AJ Frazier, Jake Schaefer
 # Majority of code taken from last years project Black-EtAl
 # Lorenz System:
 # 𝑥˙=𝑠(𝑦−𝑥) 
 # 𝑦˙=𝑥(𝑟−𝑧)−𝑦 
-# 𝑧˙=𝑥𝑦−𝑏𝑧 
+# 𝑧˙=𝑥𝑦−𝑏𝑧
+
 
 import numpy as np
 import matplotlib.pyplot as plt
-import math
+from scipy.stats import entropy
 
-
-r= 28
-b=8/3
-def lorenz_system(x, y, z, r, b, s):
+def lorenz_system(x, y, z, s, r=28, b=8/3):
     x_dot = s * (y - x)
-    y_dot = r * x - y - x * z
+    y_dot = x * (r - z) - y
     z_dot = x * y - b * z
     return x_dot, y_dot, z_dot
 
-
 ds = 0.1  # parameter step size
-s = np.arange(5, 15, ds)  # parameter range
-dt = 0.001  # time step
-t = np.arange(0, 10, dt)  # time range
+s_values = np.arange(10, 15, ds)  # Prandtl number range
+dt = 0.01  # time step
+t = np.arange(0, 2, dt)  # time range
 
-# initialize solution arrays
-xs = np.empty(len(t) + 1)
-ys = np.empty(len(t) + 1)
-zs = np.empty(len(t) + 1)
+entropies_x = []
+entropies_y = []
+entropies_z = []
 
+for S in s_values:
+    xs, ys, zs = [1.0], [1.0], [1.0]  # Initial conditions
 
-# initial values x0,y0,z0 for the system
-xs[0], ys[0], zs[0] = (1, 1, 1)
+    for i in range(len(t) - 1):
+        x_dot, y_dot, z_dot = lorenz_system(xs[-1], ys[-1], zs[-1], S)
+        xs.append(xs[-1] + x_dot * dt)
+        ys.append(ys[-1] + y_dot * dt)
+        zs.append(zs[-1] + z_dot * dt)
 
-svalues=[]
+    plt.figure(figsize=(12, 4))
+    plt.subplot(131)
+    plt.plot(xs, ys)
+    plt.title(f'Lorenz Attractor for s={S:.1f}\nX-Y Plane')
+    plt.xlabel('X')
+    plt.ylabel('Y')
 
-for S in s:
-  svalues.append(S)
+    plt.subplot(132)
+    plt.plot(xs, zs)
+    plt.title('X-Z Plane')
+    plt.xlabel('X')
+    plt.ylabel('Z')
 
-  for i in range(len(t)):
-        # approximate numerical solutions to system
-        x_dot, y_dot, z_dot = lorenz_system(xs[i], ys[i], zs[i], S)
-        xs[i + 1] = xs[i] + (x_dot * dt)
-        ys[i + 1] = ys[i] + (y_dot * dt)
-        zs[i + 1] = zs[i] + (z_dot * dt)
-        #cataloging x,y,z values
-        
-        # calculate and save the peak values of the z solution
-        
-    # "use final values from one run as initial conditions for the next to stay near the attractor"
-xs[0], ys[0], zs[0] = xs[i], ys[i], zs[i]
+    plt.subplot(133)
+    plt.plot(ys, zs)
+    plt.title('Y-Z Plane')
+    plt.xlabel('Y')
+    plt.ylabel('Z')
 
-xarray=np.array(xs)
-yarray=np.array(ys)
-zarray=np.array(zs)
+    plt.tight_layout()
+    plt.show()
 
-xdist=[]
-ydist=[]
-zdist=[]
+    # Compute histograms as probability distributions for Shannon entropy
+    prob_x, _ = np.histogram(xs, bins=30, density=True)
+    prob_y, _ = np.histogram(ys, bins=30, density=True)
+    prob_z, _ = np.histogram(zs, bins=30, density=True)
 
-for j in xarray:
-    xdist.append( 1 / np.exp(xarray - i).sum() )
-    ydist.append( 1 / np.exp(yarray - i).sum() )
-    zdist.append( 1 / np.exp(zarray - i).sum() )
-    
-    
-xdist = np.array(xdist)
-ydist = np.array(ydist)
-zdist = np.array(zdist)
+    # Compute Shannon entropy
+    entropy_x = entropy(prob_x, base=2)
+    entropy_y = entropy(prob_y, base=2)
+    entropy_z = entropy(prob_z, base=2)
 
+    entropies_x.append(entropy_x)
+    entropies_y.append(entropy_y)
+    entropies_z.append(entropy_z)
 
-print(xdist)
+# Scatter plots of Shannon entropy
+plt.figure(figsize=(12, 4))
+plt.subplot(131)
+plt.scatter(s_values, entropies_x)
+plt.title('Shannon Entropy of X')
+plt.xlabel('s')
+plt.ylabel('Entropy')
 
+plt.subplot(132)
+plt.scatter(s_values, entropies_y)
+plt.title('Shannon Entropy of Y')
+plt.xlabel('s')
 
+plt.subplot(133)
+plt.scatter(s_values, entropies_z)
+plt.title('Shannon Entropy of Z')
+plt.xlabel('s')
 
-
-    
-
+plt.tight_layout()
+plt.show()
