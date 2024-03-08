@@ -53,9 +53,29 @@ for S in s:
         
     # "use final values from one run as initial conditions for the next to stay near the attractor"
     xs[0], ys[0], zs[0] = xs[i], ys[i], zs[i]
-xdistribution=
-ydistribution=
-zdistribution=
+
+xarray=np.array(xvalues)
+yarray=np.array(yvalues)
+zarray-np.array(zvalues)
+
+xdist=[]
+ydist=[]
+zdist=[]
+
+for j in xarray:
+    xdist.append( 1 / np.exp(xarray - i).sum() )
+    ydist.append( 1 / np.exp(yarray - i).sum() )
+    zdist.append( 1 / np.exp(zarray - i).sum() )
+    
+    
+xdist = np.array(xdist)
+ydist = np.array(ydist)
+zdist = np.array(zdist)
+
+
+print(xdist)
+
+
 
 
     
