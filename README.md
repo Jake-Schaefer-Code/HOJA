@@ -1,6 +1,6 @@
-# PHYS 231 group research project
+# PHYS 231 group research project Winter 2024
 # Group: Henry Macrae-Sadek, Omar Sierra AJ Frazier, Jake Schaefer
-
+# Majority of code taken from last years project Black-EtAl
 # Lorenz System:
 # 𝑥˙=𝑠(𝑦−𝑥) 
 # 𝑦˙=𝑥(𝑟−𝑧)−𝑦 
@@ -18,7 +18,7 @@ def lorenz_system(x, y, z, r=28, b=8/3, s):
 
 
 ds = 0.1  # parameter step size
-s = np.arange(25, 250, ds)  # parameter range
+s = np.arange(5, 15, ds)  # parameter range
 dt = 0.001  # time step
 t = np.arange(0, 10, dt)  # time range
 
@@ -32,7 +32,9 @@ zs = np.empty(len(t) + 1)
 xs[0], ys[0], zs[0] = (1, 1, 1)
 
 svalues=[]
-
+xvalues=[]
+yvalues=[]
+zvalues=[]
 for S in s:
   svalues.append(S)
 
@@ -42,6 +44,19 @@ for S in s:
         xs[i + 1] = xs[i] + (x_dot * dt)
         ys[i + 1] = ys[i] + (y_dot * dt)
         zs[i + 1] = zs[i] + (z_dot * dt)
+        #cataloging x,y,z values
+        xvalues.append(xs[i])
+        yvalues.append(ys[i])
+        zvalues.append(zs[i])
+        
+        # calculate and save the peak values of the z solution
+        
+    # "use final values from one run as initial conditions for the next to stay near the attractor"
+    xs[0], ys[0], zs[0] = xs[i], ys[i], zs[i]
+xdistribution=
+ydistribution=
+zdistribution=
+
 
     
 
